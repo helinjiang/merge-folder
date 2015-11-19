@@ -32,6 +32,28 @@ function testGetSameName() {
     }
 }
 
+// 测试getSameSize
+function testGetSameSize() {
+    var paths = 'test/fixtures',
+        getSameSizeeResult = mergeFolder.getSameSize(paths);
+
+    if (_.isEmpty(getSameSizeeResult)) {
+        console.log('没有相同文件大小的文件！');
+    } else {
+        for (var fileSize in getSameSizeeResult) {
+            var existArr = getSameSizeeResult[''+fileSize],
+                tArr = [];
+
+            tArr.push('\n' + fileSize + '存在' + existArr.length + '份：');
+            existArr.forEach(function (item, index) {
+                tArr.push('\n' + index + ':' + item.fullPath + ', ' + 'size=' + item.size + ', mtime=' + item.mtime);
+            });
+
+            console.log(tArr.join(''));
+        }
+    }
+}
+
 // 测试getSameMd5
 function testGetSameMd5() {
     var paths = 'test/fixtures',
@@ -83,6 +105,7 @@ function testGetAllFile() {
 var t1 = new Date().getTime();
 //testGetSameMd5();
 //testGetSameName();
-testGetAllFile();
+testGetSameSize();
+//testGetAllFile();
 var t2 = new Date().getTime();
 console.log("cost:" + (t2 - t1));

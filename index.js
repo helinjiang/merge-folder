@@ -82,6 +82,42 @@ function getSameName(paths) {
 }
 
 /**
+ * 获得某路径下所有相同文件大小的重复文件信息。
+ * @param {String} paths 路径
+ * @return {Object} 结果，key值为文件大小，value值为数组，每个数组的元素为FileItem。
+ */
+function getSameSize(paths) {
+    var entry = walkSync.entries(paths, {directories: false});
+
+    var map = {},
+        multiNameArr = [],
+        result = {};
+
+    entry.forEach(function (item) {
+        var fileItem = new FileItem(item.basePath, item.relativePath, item.size, item.mtime),
+            fileSizeName = ''+fileItem.size;
+
+        var curItemArr = map[fileSizeName];
+        if (curItemArr) {
+            multiNameArr.push(fileSizeName);
+        } else {
+            curItemArr = [];
+            map[fileSizeName] = curItemArr;
+        }
+
+        curItemArr.push(fileItem);
+    });
+
+    if (multiNameArr.length) {
+        multiNameArr.forEach(function (fileSizeName) {
+            result[fileSizeName] = map[fileSizeName];
+        });
+    }
+
+    return result;
+}
+
+/**
  * 获得某路径下md5值相同的重复文件信息。
  * @param {String} paths 路径
  * @return {Object} 结果，key值为md5值，value值为数组，每个数组的元素为FileItem。
@@ -96,7 +132,10 @@ function getSameMd5(paths) {
     entry.forEach(function (item) {
         var fileItem = new FileItem(item.basePath, item.relativePath, item.size, item.mtime),
             md5 = util.getHashOfFile(fileItem.fullPath);
-
+        // TODO 注意，如果文件比较多的话，此处每个文件做hash会比较耗时，尤其是文件也相对比较大时，情况更严重
+        // 我尝试过遍历包含703张图片，结果耗时189.3s图片，平均一张耗时：269ms;
+        // 10M的视频400ms左右；1.55M图片126ms
+        // 10M的视频290ms左右；1.55M图片50ms
         fileItem.md5 = md5;
 
         var curItemArr = map[md5];
@@ -122,6 +161,7 @@ function getSameMd5(paths) {
 module.exports = {
     getAllFile: getAllFile,
     getSameName: getSameName,
+    getSameSize: getSameSize,
     getSameMd5: getSameMd5
-}
+};
 
