@@ -1,0 +1,27 @@
+{
+  "name": "merge-folder",
+  "version": "1.0.0",
+  "description": "Node.js module for merge folder to another",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/helinjiang/merge-folder.git"
+  },
+  "keywords": [
+    "merge",
+    "folder"
+  ],
+  "author": "helinjiang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/helinjiang/merge-folder/issues"
+  },
+  "homepage": "https://github.com/helinjiang/merge-folder#readme",
+  "dependencies": {
+    "underscore": "^1.8.3",
+    "walk-sync": "^0.2.6"
+  }
+}
