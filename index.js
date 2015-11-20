@@ -5,8 +5,10 @@
  * @date 2015/11/19
  */
 var walkSync = require('walk-sync');
+var fs = require("fs");
 var path = require("path");
 var util = require("./lib/util");
+var _ = require('underscore');
 
 /**
  * 文件对象
@@ -95,7 +97,7 @@ function getSameSize(paths) {
 
     entry.forEach(function (item) {
         var fileItem = new FileItem(item.basePath, item.relativePath, item.size, item.mtime),
-            fileSizeName = ''+fileItem.size;
+            fileSizeName = '' + fileItem.size;
 
         var curItemArr = map[fileSizeName];
         if (curItemArr) {
@@ -158,10 +160,38 @@ function getSameMd5(paths) {
     return result;
 }
 
+/**
+ * 获取某路径下的所有文件信息，并保存起来
+ * @param {String} targetPath 目标路径
+ * @param {String} savePath 保存文件的路径
+ * @param {String} itemTpl 保存文件中每一行的数据模版
+ */
+function saveAllFileInfo(targetPath, savePath, itemTpl) {
+    var getAllFileResult = getAllFile(targetPath),
+        itemTplStr = itemTpl || '<%=fullPath%>|<%=size%>|<%=mtime%>';
+
+    if (!getAllFileResult.length) {
+        console.error('Can not find any file in ' + targetPath);
+    } else {
+        var arr = [];
+        getAllFileResult.forEach(function (item) {
+            var template = _.template(itemTplStr);
+
+            arr.push(template(item));
+        });
+
+        fs.writeFile(savePath, arr.join('\n'), function (err) {
+            if (err) throw err;
+            console.log('Get files from %s and save info in %s success!', targetPath, savePath);
+        });
+    }
+}
+
 module.exports = {
     getAllFile: getAllFile,
     getSameName: getSameName,
     getSameSize: getSameSize,
-    getSameMd5: getSameMd5
+    getSameMd5: getSameMd5,
+    saveAllFileInfo: saveAllFileInfo
 };
 
