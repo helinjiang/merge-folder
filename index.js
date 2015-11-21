@@ -13,10 +13,10 @@ var _ = require('underscore');
 /**
  * 文件对象
  * TODO 考虑是否要加入mode权限
- * @param basePath
- * @param relativePath
- * @param size
- * @param mtime
+ * @param {String} basePath 基础路径
+ * @param {String} relativePath 相对路径
+ * @param {String} size 文件大小
+ * @param {String} mtime 文件最后修改时间
  * @constructor
  */
 function FileItem(basePath, relativePath, size, mtime) {
